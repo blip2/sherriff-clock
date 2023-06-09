@@ -22,8 +22,8 @@ class Network:
 
         self.base = self.server.route("/")(self.base)
 
-        #ntp = NTP(pool, tz_offset=0)
-        #rtc.RTC().datetime = ntp.datetime
+        ntp = NTP(pool, tz_offset=0)
+        rtc.RTC().datetime = ntp.datetime
 
 
     def base(self, request: Request):

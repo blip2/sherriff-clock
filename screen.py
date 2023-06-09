@@ -1,11 +1,13 @@
 import board
+import time
 import displayio
 import framebufferio
 import rgbmatrix
 import adafruit_display_text.label
 from adafruit_bitmap_font import bitmap_font
 
-font = bitmap_font.load_font("fonts/LeagueSpartan-Bold-16.bdf", displayio.Bitmap)
+LARGE_FONT = bitmap_font.load_font("fonts/vcrosd-18.bdf", displayio.Bitmap)
+SMALL_FONT = bitmap_font.load_font("fonts/pixeled-6.bdf", displayio.Bitmap)
 
 class Screen:
     display = None
@@ -13,7 +15,7 @@ class Screen:
     def __init__(self):
         displayio.release_displays()
 
-        bit_depth = 3
+        bit_depth = 2
         base_width = 32
         base_height = 16
         chain_across = 1
@@ -25,24 +27,51 @@ class Screen:
         matrix = rgbmatrix.RGBMatrix(
             width=width, height=height, bit_depth=bit_depth,
             tile=tile_down, serpentine=False,
-            rgb_pins=[board.GP2, board.GP4, board.GP6,
-                    board.GP3, board.GP5, board.GP7],
-            addr_pins=[board.GP12, board.GP11, board.GP10],
-            clock_pin=board.GP9, latch_pin=board.GP8, output_enable_pin=board.GP13)
+            rgb_pins=[board.GP2, board.GP3, board.GP4,
+                    board.GP5, board.GP6, board.GP7],
+            addr_pins=[board.GP8, board.GP9, board.GP10],
+            clock_pin=board.GP11, latch_pin=board.GP12, output_enable_pin=board.GP13)
 
         self.display = framebufferio.FramebufferDisplay(matrix, auto_refresh=False, rotation=90)
 
-    def draw_text(self):
-        self.line1 = adafruit_display_text.label.Label(
-            font,
-            color=0x330033,
-            text="23:02")
-        self.line1.x = 3
-        self.line1.y = 17
+    def draw_time(self):
+        self.hours = adafruit_display_text.label.Label(
+            LARGE_FONT,
+            color=0x008888,
+            x=1,
+            y=11)
+        
+        colon = adafruit_display_text.label.Label(
+            LARGE_FONT,
+            color=0x008888,
+            x=26,
+            y=11,
+            text=":")
 
+        self.mins = adafruit_display_text.label.Label(
+            LARGE_FONT,
+            color=0x008888,
+            x=34,
+            y=11)
+
+        self.message = adafruit_display_text.label.Label(
+            SMALL_FONT,
+            color=0x880000,
+            x=2,
+            y=24)
+        
         g = displayio.Group()
-        g.append(self.line1)
+        g.append(self.hours)
+        g.append(colon)
+        g.append(self.mins)
+        g.append(self.message)
         self.display.show(g)
+
+    def update(self):
+        now = time.struct_time(time.localtime())
+        self.hours.text = f"{now.tm_hour}"
+        self.mins.text = f"{now.tm_min}"
+        self.message.text = f"{now.tm_sec:02}"
 
     def scroll(self, line):
         line.x = line.x - 1
