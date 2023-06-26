@@ -6,8 +6,8 @@ import rgbmatrix
 import adafruit_display_text.label
 from adafruit_bitmap_font import bitmap_font
 
-LARGE_FONT = bitmap_font.load_font("fonts/vcrosd-18.bdf", displayio.Bitmap)
-SMALL_FONT = bitmap_font.load_font("fonts/pixeled-6.bdf", displayio.Bitmap)
+LARGE_FONT = bitmap_font.load_font("fonts/icl16x16u.bdf", displayio.Bitmap)
+SMALL_FONT = bitmap_font.load_font("fonts/ie8x14u.bdf", displayio.Bitmap)
 
 class Screen:
     display = None
@@ -38,26 +38,26 @@ class Screen:
         self.hours = adafruit_display_text.label.Label(
             LARGE_FONT,
             color=0x008888,
-            x=1,
-            y=11)
+            x=-1,
+            y=10)
         
         colon = adafruit_display_text.label.Label(
             LARGE_FONT,
             color=0x008888,
-            x=26,
-            y=11,
+            x=25,
+            y=10,
             text=":")
 
         self.mins = adafruit_display_text.label.Label(
             LARGE_FONT,
             color=0x008888,
-            x=34,
-            y=11)
+            x=33,
+            y=10)
 
         self.message = adafruit_display_text.label.Label(
             SMALL_FONT,
             color=0x880000,
-            x=2,
+            x=48,
             y=24)
         
         g = displayio.Group()
